@@ -1,0 +1,18 @@
+# Minimal runtime dependencies for the RunPod Serverless Audio QA worker.
+# The base image already provides CUDA PyTorch.
+
+# QA / audio
+demucs==4.1.0
+scipy>=1.11.0
+numpy>=1.24.0
+soundfile>=0.12.1
+
+# RunPod SDK
+runpod>=1.7.0
+
+# HTTP / parsing
+requests>=2.31.0
+pydantic>=2.9.0
+pydantic-settings>=2.5.0
+python-dotenv>=1.0.0
+pyyaml>=6.0.0
