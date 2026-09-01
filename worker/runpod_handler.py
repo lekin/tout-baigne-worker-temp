@@ -5,14 +5,14 @@ import os
 import sys
 import time
 
-# /workspace/tout-baigne is the repo root copied to the network volume.
+# Repo root is wherever this file lives (network volume or container disk).
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, str(REPO_ROOT))
 
 os.environ.setdefault("AIRTABLE_API_KEY", "dummy")
 os.environ.setdefault("AIRTABLE_BASE_ID", "dummy")
 os.environ.setdefault("AIRTABLE_TABLE_NAME", "Tracks")
-os.environ.setdefault("QA_CACHE_DIR", "/workspace/qa_cache")
+os.environ.setdefault("QA_CACHE_DIR", os.environ.get("RUNPOD_VOLUME_PATH", "/workspace") + "/qa_cache")
 
 import runpod
 
@@ -31,7 +31,8 @@ def handler(job):
         return {"success": False, "error": f"invalid_request: {e}"}
 
     # GPU name is not known until after PyTorch loads, but run_audio_qa captures it.
-    result = run_audio_qa(request, work_dir="/workspace/runpod_qa_work", gpu_name=None)
+    work_dir = os.environ.get("QA_WORK_DIR", "/workspace/runpod_qa_work")
+    result = run_audio_qa(request, work_dir=work_dir, gpu_name=None)
     return {
         "success": result.success,
         "record_id": result.record_id,
